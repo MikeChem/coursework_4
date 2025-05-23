@@ -1,0 +1,8 @@
+{% extends 'mailing/base.html' %}
+
+{% block title %}Подтверждение почты{% endblock %}
+
+{% block content %}
+<h2>Почта успешно подтверждена!</h2>
+<p>Теперь вы можете <a href="{% url 'users:login' %}">войти</a> в систему.</p>
+{% endblock %}

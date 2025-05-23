@@ -1,0 +1,13 @@
+{% extends 'mailing/base.html' %}
+
+{% block title %}{% if mailing %}Редактирование рассылки{% else %}Добавление рассылки{% endif %}{% endblock %}
+
+{% block content %}
+<h2>{% if mailing %}Редактирование рассылки{% else %}Добавление рассылки{% endif %}</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Сохранить</button>
+    <a href="{% url 'mailing:mailing_list' %}">Отмена</a>
+</form>
+{% endblock %}
