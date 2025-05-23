@@ -1,0 +1,20 @@
+{% extends 'mailing/base.html' %}
+
+{% block title %}Список сообщений{% endblock %}
+
+{% block content %}
+<h2>Список сообщений</h2>
+<a href="{% url 'mailing:message_create' %}" class="btn">Добавить сообщение</a>
+<ul>
+    {% for message in messages %}
+        <li>
+            {{ message.subject }}
+            <a href="{% url 'mailing:message_detail' message.pk %}">Просмотр</a>
+            <a href="{% url 'mailing:message_update' message.pk %}">Редактировать</a>
+            <a href="{% url 'mailing:message_delete' message.pk %}">Удалить</a>
+        </li>
+    {% empty %}
+        <p>Нет сообщений.</p>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,61 @@
+<!-- Шапка с горизонтальным меню -->
+<div class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <div class="container">
+        <!-- Логотип или название приложения -->
+        <a href="{% url 'mailing:home' %}" class="navbar-brand d-flex align-items-center">
+            <strong>Система рассылок</strong>
+        </a>
+
+        <!-- Тoggler для мобильной версии -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Список навигации -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <!-- Главная страница -->
+                <li class="nav-item">
+                    <a href="{% url 'mailing:home' %}" class="nav-link">Главная</a>
+                </li>
+
+                <!-- Разделы для авторизованных пользователей -->
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a href="{% url 'mailing:recipient_list' %}" class="nav-link">Получатели</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'mailing:message_list' %}" class="nav-link">Сообщения</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'mailing:mailing_list' %}" class="nav-link">Рассылки</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ user.email }}
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <li><a class="dropdown-item" href="{% url 'users:profile' %}">Профиль</a></li>
+                            <li>
+                                <form method="post" action="{% url 'users:logout' %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item">Выйти</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <!-- Разделы для неавторизованных пользователей -->
+                    <li class="nav-item">
+                        <a href="{% url 'users:login' %}" class="nav-link">Войти</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'users:register' %}" class="nav-link">Регистрация</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
