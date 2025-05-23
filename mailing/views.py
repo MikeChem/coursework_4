@@ -1,21 +1,12 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden
-from django.urls import reverse_lazy
-from django.views import View
-from django.views.generic import (
-    ListView,
-    DetailView,
-    CreateView,
-    UpdateView,
-    DeleteView,
-    TemplateView,
-)
-from .models import Recipient, Message, MailingAttempt
-from .forms import RecipientForm, MessageForm, MailingForm
 from django.shortcuts import get_object_or_404, redirect, render
-from .models import Mailing
-from .services import perform_mailing, get_recipients_from_cache, get_messages_from_cache
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, DeleteView, DetailView, ListView, TemplateView, UpdateView
 
+from .forms import MailingForm, MessageForm, RecipientForm
+from .models import Mailing, MailingAttempt, Message, Recipient
+from .services import get_messages_from_cache, get_recipients_from_cache, perform_mailing
 
 # Контроллеры для получателей рассылки (Recipients)
 
@@ -155,9 +146,7 @@ class MailingUpdateView(LoginRequiredMixin, UpdateView):
     def dispatch(self, request, *args, **kwargs):
         mailing = self.get_object()
         if not self.request.user.is_staff and mailing.owner != self.request.user:
-            return HttpResponseForbidden(
-                "Вы не имеете прав для редактирования этой рассылки."
-            )
+            return HttpResponseForbidden("Вы не имеете прав для редактирования этой рассылки.")
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -175,9 +164,7 @@ class MailingDeleteView(LoginRequiredMixin, DeleteView):
     def dispatch(self, request, *args, **kwargs):
         mailing = self.get_object()
         if not self.request.user.is_staff and mailing.owner != self.request.user:
-            return HttpResponseForbidden(
-                "Вы не имеете прав для удаления этой рассылки."
-            )
+            return HttpResponseForbidden("Вы не имеете прав для удаления этой рассылки.")
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -195,18 +182,12 @@ class UserStatsView(LoginRequiredMixin, TemplateView):
         user = self.request.user
 
         # Подсчет успешных и неуспешных попыток
-        successful_attempts = MailingAttempt.objects.filter(
-            mailing__owner=user, status="success"
-        ).count()
+        successful_attempts = MailingAttempt.objects.filter(mailing__owner=user, status="success").count()
 
-        failed_attempts = MailingAttempt.objects.filter(
-            mailing__owner=user, status="failed"
-        ).count()
+        failed_attempts = MailingAttempt.objects.filter(mailing__owner=user, status="failed").count()
 
         # Общее количество отправленных сообщений
-        total_messages_sent = MailingAttempt.objects.filter(
-            mailing__owner=user, status="success"
-        ).count()
+        total_messages_sent = MailingAttempt.objects.filter(mailing__owner=user, status="success").count()
 
         context.update(
             {
@@ -232,7 +213,7 @@ class HomeView(LoginRequiredMixin, ListView):
     model = Mailing  # Указывает модель, с которой работает представление
     template_name = "mailing/home.html"  # Имя шаблона
     context_object_name = "mailings"  # Имя переменной в контексте
-    login_url = 'users:login'
+    login_url = "users:login"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

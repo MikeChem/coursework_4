@@ -4,9 +4,7 @@ from config import settings
 
 
 class Recipient(models.Model):
-    owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Владелец"
-    )
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Владелец")
     email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=255)
     comment = models.TextField(blank=True, null=True)
@@ -25,9 +23,7 @@ class Recipient(models.Model):
 
 
 class Message(models.Model):
-    owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Владелец"
-    )
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Владелец")
     subject = models.CharField(max_length=255)
     body = models.TextField()
 
@@ -45,9 +41,7 @@ class Message(models.Model):
 
 
 class Mailing(models.Model):
-    owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Владелец"
-    )
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Владелец")
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     status = models.CharField(

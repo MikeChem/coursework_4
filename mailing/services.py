@@ -1,9 +1,10 @@
+from django.conf import settings
 from django.core.cache import cache
 from django.core.mail import send_mail
-from django.conf import settings
 
 from config.settings import CACHE_ENABLED
-from .models import Mailing, MailingAttempt, Recipient, Message
+
+from .models import Mailing, MailingAttempt, Message, Recipient
 
 
 def send_email(recipient_email, subject, body):
@@ -37,9 +38,7 @@ def perform_mailing(mailing_id):
         mailing.save()
 
         for recipient in mailing.recipients.all():
-            success, response = send_email(
-                recipient.email, mailing.message.subject, mailing.message.body
-            )
+            success, response = send_email(recipient.email, mailing.message.subject, mailing.message.body)
             MailingAttempt.objects.create(
                 status="success" if success else "failed",
                 server_response=response if not success else None,
@@ -55,7 +54,7 @@ def perform_mailing(mailing_id):
 def get_recipients_from_cache():
     if not CACHE_ENABLED:
         return Recipient.objects.all()
-    key = 'recipient_list'
+    key = "recipient_list"
     recipients = cache.get(key)
     if recipients is not None:
         return recipients
@@ -67,7 +66,7 @@ def get_recipients_from_cache():
 def get_messages_from_cache():
     if not CACHE_ENABLED:
         return Message.objects.all()
-    key = 'message_list'
+    key = "message_list"
     messages = cache.get(key)
     if messages is not None:
         return messages

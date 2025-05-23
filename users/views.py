@@ -1,14 +1,16 @@
+import secrets
+
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
-from django.http import HttpResponseForbidden
-from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView
-from django.views.generic.edit import CreateView, UpdateView
-from django.shortcuts import get_object_or_404, redirect, render
-import secrets
-from django.conf import settings
 from django.core.mail import send_mail
+from django.http import HttpResponseForbidden
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse_lazy
+from django.views.generic import DetailView, ListView
+from django.views.generic.edit import CreateView, UpdateView
+
 from .forms import CustomUserRegistrationForm, UserProfileForm
 
 User = get_user_model()
@@ -17,18 +19,14 @@ User = get_user_model()
 class RegisterView(CreateView):
     model = User
     form_class = CustomUserRegistrationForm
-    success_url = reverse_lazy(
-        "mailing:home"
-    )  # Перенаправление на главную страницу после успешной регистрации
+    success_url = reverse_lazy("mailing:home")  # Перенаправление на главную страницу после успешной регистрации
     template_name = "users/register.html"
 
     def form_valid(self, form):
         user = form.save(commit=False)
         user.is_active = False  # Пользователь неактивен до подтверждения почты
         user.save()
-        self.send_verification_email(
-            user
-        )  # Отправка письма для подтверждения регистрации
+        self.send_verification_email(user)  # Отправка письма для подтверждения регистрации
         self.send_welcome_email(user.email)  # Отправка приветственного письма
         return super().form_valid(form)
 
@@ -105,13 +103,13 @@ class ProfileEditView(LoginRequiredMixin, UpdateView):
 
 
 class CustomLoginView(LoginView):
-    template_name = 'users/login.html'  # Указываем путь к шаблону
+    template_name = "users/login.html"  # Указываем путь к шаблону
     redirect_authenticated_user = True  # Если пользователь уже авторизован, перенаправляем на другую страницу
-    success_url = reverse_lazy('mailing:home')  # Страница после успешного входа
+    success_url = reverse_lazy("mailing:home")  # Страница после успешного входа
 
     def get_success_url(self):
         return self.success_url  # Возвращаем URL для перенаправления после входа
 
 
 class CustomLogoutView(LogoutView):
-    next_page = reverse_lazy('mailing:home')
+    next_page = reverse_lazy("mailing:home")

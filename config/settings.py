@@ -1,5 +1,6 @@
-from pathlib import Path
 import os
+from pathlib import Path
+
 from dotenv import load_dotenv
 
 load_dotenv(override=True)
@@ -115,5 +116,5 @@ if CACHE_ENABLED:
         }
     }
 
-LOGIN_URL = 'users:login'
-LOGIN_REDIRECT_URL = 'mailing:home'
+LOGIN_URL = "users:login"
+LOGIN_REDIRECT_URL = "mailing:home"
